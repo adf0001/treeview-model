@@ -1,11 +1,86 @@
 
 //global variable, for html page, refer tpsvr @ npm.
-var treeview_model = require("../treeview-model.js");
+treeview_model = require("../treeview-model.js");
 
 module.exports = {
+	"level-1": function (done) {
+		treeview_model = require("../level-1.js");
+
+		document.getElementById('divResult3').innerHTML = 
+		`<div class="tree-container" id="tree1">
+			<div class="tree-node" id=nd1>
+				<span class='tree-name'>nd1</span>
+				<div class="tree-children">
+					<div class="tree-node" id=nd2>
+						<span class='tree-name'>nd2</span>
+					</div>
+					<div class="tree-node" id=nd3>
+						<span class='tree-name' id=name3>nd3</span>
+						<span class='my-1' id=nd3my1>-my1</span>
+					</div>
+				</div>
+			</div>
+		</div>`;
+
+		var el = document.getElementById('tree1');	//container
+
+		var nd3 = document.getElementById('nd3');
+		var my1 = document.getElementById('nd3my1');
+
+		treeview_model.containerAttribute(my1, "aa", 11);
+		treeview_model.containerAttribute(my1, "bb", { b: 22 });
+
+		done(!(
+			treeview_model.getNode(my1) === nd3 &&
+			treeview_model.nodeName(my1) === document.getElementById('name3') &&
+			treeview_model.nodePart(nd3, "my-1") === my1 &&
+			treeview_model.getContainer(my1) === el &&
+
+			el.getAttribute("aa") === "11" &&
+			el.getAttribute("bb") === '{"b":22}' &&
+			treeview_model.containerAttribute(my1, "aa") === "11" &&
+			treeview_model.containerAttribute(my1, "aa", void 0, true) === 11 &&
+			JSON.stringify(treeview_model.containerAttribute(my1, "bb")) === '{"b":22}' &&
+			treeview_model.containerAttr(my1, "bb", void 0, false) === '{"b":22}' &&
+
+			true
+		));
+	},
+
+	"level-2": function (done) {
+		module.exports["level-1"](function (err, data) {
+			if (err) { done(err); return; }
+
+			treeview_model = require("../level-2.js");
+
+			treeview_model.add(
+				'nd3my1',
+				{
+					outerHtml: `
+						<div class="tree-node" id=nd5>
+							<span class='tree-name'>nd5</span>
+						</div>
+						<div class="tree-node" id=nd6>
+							<span class='tree-name'>nd6</span>
+						</div>`,
+					sweepSpaces: true,
+				}
+			);
+	
+			var nd3 = document.getElementById('nd3');
+
+			treeview_model.listenOnClick(nd3);
+
+			treeview_model.setToExpandState(nd3,"toggle");
+
+			done(!(
+				true
+			));
+		})
+	},
 
 	"treeview_model": function (done) {
-		if (typeof window === "undefined") throw "disable for nodejs";
+		treeview_model = require("../treeview-model.js");
 
 		document.getElementById('divResult3').innerHTML =
 			'<span class="-ht-cmd" id="cmdEnable">enable</span> ' +
@@ -100,7 +175,7 @@ module.exports = {
 			}, 0);	//delay for linsten sequence
 		});
 
-		function getUpdateSel(){
+		function getUpdateSel() {
 			var updateSel = document.getElementById("selUpdateSel").value;
 			if (updateSel === "true") updateSel = true;
 			else if (updateSel === "false") updateSel = false;
