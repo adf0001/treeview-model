@@ -6,21 +6,21 @@ module.exports = {
 	"level-1": function (done) {
 		treeview_model = require("../level-1.js");
 
-		document.getElementById('divResult3').innerHTML = 
-		`<div class="tree-container" id="tree1">
-			<div class="tree-node" id=nd1>
-				<span class='tree-name'>nd1</span>
-				<div class="tree-children">
-					<div class="tree-node" id=nd2>
-						<span class='tree-name'>nd2</span>
-					</div>
-					<div class="tree-node" id=nd3>
-						<span class='tree-name' id=name3>nd3</span>
-						<span class='my-1' id=nd3my1>-my1</span>
+		document.getElementById('divResult3').innerHTML =
+			`<div class="tree-container" id="tree1">
+				<div class="tree-node" id=nd1>
+					<span class='tree-name'>nd1</span>
+					<div class="tree-children">
+						<div class="tree-node" id=nd2>
+							<span class='tree-name'>nd2</span>
+						</div>
+						<div class="tree-node" id=nd3>
+							<span class='tree-name' id=name3>nd3</span>
+							<span class='my-1' id=nd3my1>-my1</span>
+						</div>
 					</div>
 				</div>
-			</div>
-		</div>`;
+			</div>`;
 
 		var el = document.getElementById('tree1');	//container
 
@@ -32,6 +32,17 @@ module.exports = {
 
 		done(!(
 			treeview_model.getNode(my1) === nd3 &&
+
+			/*
+			.nodePart(el, className, template, before)
+				template: { (outerHtml | innerHtml/content | createByDefault) } 
+					| content | createByDefault===true
+	
+				shortcuts:
+					.nodeChildren(el, template)
+					.nodeName(el, template)
+					.nodeToExpand(el, template, before)
+			*/
 			treeview_model.nodeName(my1) === document.getElementById('name3') &&
 			treeview_model.nodePart(nd3, "my-1") === my1 &&
 			treeview_model.getContainer(my1) === el &&
@@ -53,6 +64,21 @@ module.exports = {
 
 			treeview_model = require("../level-2.js");
 
+			/*
+			.addNode(elNode, options, childrenContainer)
+				options:{ (outHtml | innerHtml/content | name, toExpand, toExpandTemplate),
+					childrenTemplate, insert, sweepSpaces } | name.
+				childrenContainer: set true if the 'elNode' is already a children container; ignored if `.insert` is true;
+			
+			shortcuts:
+				.add(elNode, options, childrenContainer)
+	
+				.insertNode(elNode, options, toNext)
+				.insert(elNode, options, toNext)
+	
+				.insertNodeToNext(elNode, options)
+				.insertNext(elNode, options)
+			*/
 			treeview_model.add(
 				'nd3my1',
 				{
@@ -66,20 +92,118 @@ module.exports = {
 					sweepSpaces: true,
 				}
 			);
-	
-			var nd3 = document.getElementById('nd3');
 
+			var nd1 = document.getElementById('nd1');
+			var nd3 = document.getElementById('nd3');
+			var nd5 = document.getElementById('nd5');
+
+			/*
+			.listenOnClick(el, options)		//listen click event by setting container.onclick.
+				options:
+					.multipleSelection
+						boolean type; multiple selection flag;
+
+					.updateSelection
+						false		//default
+							don't touch selection; 
+						true/"remove"
+							remove the collapsed nodes from the selection;
+						"shift"
+							remove the collapsed nodes from the selection;
+								and if any node is removed from the selection,
+									add the node that casused collapsing to the selection;
+
+					.toggleSelection
+						boolean type; selection can be canceled by another click;
+					
+					.notifyClick
+						set a click event to container after setting container.onclick;
+			*/
 			treeview_model.listenOnClick(nd3);
 
-			treeview_model.setToExpandState(nd3,"toggle");
+			/*
+			.setToExpandState(el, state, text, updateChildren)		//set state of 'tree-to-expand'.
+				state:
+					bool, or string "toggle" or "disable"
+
+				updateChildren:
+					update children part flag;
+						true	- default; set css style 'display' to 'none' or '', when state is bool-value;
+						false	- do not touch 'tree-children';
+						"none"/""/string	- set css style 'display' value;
+				
+				return the to-expand element;
+
+			.getToExpandState(el)		//return null/true/false/"disable"
+			*/
+			treeview_model.setToExpandState(nd1, "toggle");
+			treeview_model.setToExpandState(nd3, "disable");
+
+			/*
+			.setNodeClass(el, className, value [, toContainer [, multiple ]] )	//set node class
+				toContainer
+					false
+						only set current node class, don't save data to container;
+					true
+						save node eid data to container attribute className+"-eid-data";
+	
+						if "multiple" is false
+							if "value" is true, toggle the last;
+							then save eid as a json string object, or null;
+						if "multiple" is true
+							save as eid array, or empty array;
+						if "multiple" is `undefined`
+							get current "multiple" from the data, then save;
+				value
+					boolean type;
+					when toContainer is true,
+						set true to add to the container attribute;
+						set false to remove from the container attribute;
+		
+			//shortcut for getNodeClass()/setNodeClass()/getContainerClassNode()
+			.nodeClass(el, className, boolValue, toOrFromContainer, multiple)
+
+			shortcuts:
+				//shortcut for "tree-selected"
+				.selectedState(el, boolValue, toOrFromContainer, multiple)
+				.getSelected(el, fromContainer)
+			*/
+			treeview_model.nodeClass(nd5, "my-cls1", true);
+			treeview_model.nodeClass(nd5, "my-cls2", true, true);
+			treeview_model.nodeClass(nd5, "my-cls3", true, true, true);
+
+			var container = treeview_model.getContainer(nd5);
+
+			//.clickPart(el, className, delay)
+			treeview_model.clickName(nd5);
 
 			done(!(
+				treeview_model.getToExpandState(nd1) === false &&
+				treeview_model.getToExpandState(nd3) === "disable" &&
+				treeview_model.getToExpandState(nd5) === null &&
+
+				nd5.classList.contains("my-cls1") &&
+				nd5.classList.contains("my-cls2") &&
+				nd5.classList.contains("my-cls3") &&
+
+				container.getAttribute("my-cls1-eid-data") === null &&
+				container.getAttribute("my-cls2-eid-data") === '"nd5"' &&
+				container.getAttribute("my-cls3-eid-data") === '["nd5"]' &&
+
+				typeof treeview_model.nodeClass(container, "my-cls1", void 0, true) === "undefined" &&
+				treeview_model.nodeClass(container, "my-cls2", void 0, true).id === "nd5" &&
+				treeview_model.nodeClass(container, "my-cls3", void 0, true)[0].id === "nd5" &&
+
+				treeview_model.getSelected(nd5) === true &&
+				treeview_model.getSelected(nd5, true).id === "nd5" &&
+				treeview_model.getSelected(container, true).id === "nd5" &&
+
 				true
 			));
 		})
 	},
 
-	"treeview_model": function (done) {
+	"level-1/2/3": function (done) {
 		treeview_model = require("../treeview-model.js");
 
 		document.getElementById('divResult3').innerHTML =
@@ -101,21 +225,6 @@ module.exports = {
 
 		var el = document.getElementById('tree1');
 
-		/*
-		.addNode(elNode, options, childrenContainer)
-			options:{ (outHtml | innerHtml/content | name, toExpand, toExpandTemplate),
-				childrenTemplate, insert } | name.
-			childrenContainer: set true if the 'elNode' is already a children container; ignored if `.insert` is true;
-		
-		shortcuts:
-			.add(elNode, options, childrenContainer)
-
-			.insertNode(elNode, options, toNext)
-			.insert(elNode, options, toNext)
-
-			.insertNodeToNext(elNode, options)
-			.insertNext(elNode, options)
-		*/
 		var elNode1 = treeview_model.addNode(el, "aaa", true);	//add by 'name'
 
 		var elNode2 = treeview_model.addNode(elNode1, "bbb");
@@ -155,16 +264,6 @@ module.exports = {
 			}
 		);
 
-		/*
-		.nodePart(el, className, template, before)
-			template: { (outerHtml | innerHtml/content | createByDefault) } 
-				| content | createByDefault===true
-
-			shortcuts:
-				.nodeChildren(el, template)
-				.nodeName(el, template)
-				.nodeToExpand(el, template, before)
-		*/
 		var elMy1 = treeview_model.nodePart(elNode3, "my-cls");
 		var elMy2 = treeview_model.nodePart(elNode3, "my-cls2", true);	//create part if not exist, by default
 
@@ -187,28 +286,6 @@ module.exports = {
 			var updateSel = getUpdateSel();
 			//alert(updateSel);
 
-			/*
-			.listenOnClick(el, options)		//listen click event by setting container.onclick.
-				options:
-					.multipleSelection
-						boolean type; multiple selection flag;
-
-					.updateSelection
-						false		//default
-							don't touch selection; 
-						true/"remove"
-							remove the collapsed nodes from the selection;
-						"shift"
-							remove the collapsed nodes from the selection;
-								and if any node is removed from the selection,
-									add the node that casused collapsing to the selection;
-
-					.toggleSelection
-						boolean type; selection can be canceled by another click;
-					
-					.notifyClick
-						set a click event to container after setting container.onclick;
-			*/
 			treeview_model.listenOnClick(el, {
 				multipleSelection: document.getElementById("chkMultiple").checked,
 				updateSelection: updateSel,
@@ -224,22 +301,6 @@ module.exports = {
 		document.getElementById("chkToggleSelection").onclick = setOnClick;
 
 		document.getElementById("cmdEnable").onclick = function () {
-			/*
-			.setToExpandState(el, state, text, updateChildren)		//set state of 'tree-to-expand'.
-
-				state:
-					bool, or string "toggle" or "disable"
-
-				updateChildren:
-					update children part flag; default true;
-						true	- set css style 'display' to 'none' or '', when state is bool-value;
-						false	- do not touch 'tree-children';
-						"none"/""/string	- set css style 'display' value;
-				
-				return the to-expand element;
-
-			.getToExpandState(el)		//return null/true/false/"disable"
-			*/
 			treeview_model.setToExpandState(elNode2, "toggle");
 		}
 
@@ -268,7 +329,6 @@ module.exports = {
 		}
 
 		document.getElementById("cmdClick").onclick = function () {
-			//.clickPart(el, className, delay)
 			treeview_model.clickToExpand(elNode2);
 		}
 
@@ -286,39 +346,9 @@ module.exports = {
 		//.containerAttribute(el, name, value, json)		//get or set container attribute
 		treeview_model.containerAttr(elMy2, "check", 999);
 
-		/*
-		.setNodeClass(el, className, value [, toContainer [, multiple ]] )	//set node class
-			toContainer
-				false
-					only set current node class, don't save data to container;
-				true
-					save node eid data to container attribute className+"-eid-data";
-
-					if "multiple" is false
-						if "value" is true, toggle the last;
-						then save eid as a json string object, or null;
-					if "multiple" is true
-						save as eid array, or empty array;
-					if "multiple" is `undefined`
-						get current "multiple" from the data, then save;
-			value
-				boolean type;
-				when toContainer is true,
-					set true to add to the container attribute;
-					set false to remove from the container attribute;
-		*/
 		treeview_model.setNodeClass(elMy2, "my-class", true, true);
 		treeview_model.setNodeClass(elMy2, "my-class2", true, true, true);
 
-		/*
-		//shortcut for getNodeClass()/setNodeClass()/getContainerClassNode()
-		.nodeClass(el, className, boolValue, toOrFromContainer, multiple)
-
-		shortcuts:
-			//shortcut for "tree-selected"
-			.selectedState(el, boolValue, toOrFromContainer, multiple)
-			.getSelected(el, fromContainer)
-		*/
 		treeview_model.selectedState(elMy2, true, true);
 		//treeview_model.selectedState(elMy2, true, true, true);
 
