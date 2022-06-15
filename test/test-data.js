@@ -190,47 +190,26 @@ module.exports = {
 				document.getElementById("selUpdateSel").onchange =
 				document.getElementById("chkToggleSelection").onclick = setOnClick;
 
-			/*
-			.addNode(elNode, options, childrenContainer)
-				options:{ (outHtml | innerHtml/content | name, toExpand, toExpandTemplate),
-					childrenTemplate, insert, sweepSpaces } | name.
-				childrenContainer: set true if the 'elNode' is already a children container; ignored if `.insert` is true;
-			
-			shortcuts:
-				.add(elNode, options, childrenContainer)
-	
-				.insertNode(elNode, options, toNext)
-				.insert(elNode, options, toNext)
-	
-				.insertNodeToNext(elNode, options)
-				.insertNext(elNode, options)
-			*/
-			treeview_model.add(
-				'nd3my1',
-				{
-					outerHtml: `
-						<div class="tree-node" id=nd5>
-							<span class='tree-name'>nd5</span>
-						</div>
-						<div class="tree-node" id=nd6>
-							<span class='tree-name'>nd6</span>
-						</div>`,
-					sweepSpaces: true,
-				}
+			treeview_model.nodeChildren('nd3my1', true).insertAdjacentHTML(
+				"beforeend",
+				`
+				<div class="tree-node" id=nd5>
+					<span class='tree-name'>nd5</span>
+				</div>
+				<div class="tree-node" id=nd6>
+					<span class='tree-name'>nd6</span>
+				</div>`
 			);
 
-			treeview_model.add(
-				'nd5',
-				{
-					outerHtml: `
-						<div class="tree-node" id=nd7>
-							<span class='tree-name'>nd7</span>
-						</div>
-						<div class="tree-node" id=nd8>
-							<span class='tree-name'>nd8</span>
-						</div>`,
-					sweepSpaces: true,
-				}
+			treeview_model.nodeChildren('nd5', true).insertAdjacentHTML(
+				"beforeend",
+				`
+				<div class="tree-node" id=nd7>
+					<span class='tree-name'>nd7</span>
+				</div>
+				<div class="tree-node" id=nd8>
+					<span class='tree-name'>nd8</span>
+				</div>`
 			);
 
 			var nd1 = document.getElementById('nd1');
@@ -316,6 +295,52 @@ module.exports = {
 				treeview_model.getSelected(container, true).id === "nd5" &&
 
 				treeview_model.isSelectedMultiple(container) === false &&
+
+				true
+			));
+		})
+	},
+
+	"level-3": function (done) {
+		module.exports["level-2"](function (err, data) {
+			if (err) { done(err); return; }
+
+			treeview_model = require("../level-3.js");
+
+			var container = treeview_model.getContainer("nd1");
+
+
+			/*
+			.addNode(elNode, options, childrenContainer)
+				options:{ (outHtml | innerHtml/content | name, toExpand, toExpandTemplate),
+					childrenTemplate, insert, sweepSpaces } | name.
+				childrenContainer: set true if the 'elNode' is already a children container; ignored if `.insert` is true;
+			
+			shortcuts:
+				.add(elNode, options, childrenContainer)
+	
+				.insertNode(elNode, options, toNext)
+				.insert(elNode, options, toNext)
+	
+				.insertNodeToNext(elNode, options)
+				.insertNext(elNode, options)
+			*/
+
+			treeview_model.add(
+				'nd5',
+				{
+					outerHtml: `
+						<div class="tree-node" id=nd9>
+							<span class='tree-name'>nd9</span>
+						</div>
+						<div class="tree-node" id=nd10>
+							<span class='tree-name'>nd10</span>
+						</div>`,
+					sweepSpaces: true,
+				}
+			);
+
+			done(!(
 
 				true
 			));

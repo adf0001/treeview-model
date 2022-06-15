@@ -9,5 +9,4 @@ Object.assign(exports,
 	require("./lib/listen-on-click.js"),
 	require("./lib/node-class.js"),
 	require("./lib/selected.js"),
-	require("./lib/add.js"),
 );
