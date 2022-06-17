@@ -99,6 +99,8 @@ module.exports = {
 					</select>
 					<span class='-ht-cmd' id=cmdUnselect title="unselect in element">unselect-in</span>/<span class='-ht-cmd' id=cmdUnselectAll title="unselect all">all</span>
 					<label title="unselect-in include"><input id=chkIncude type=checkbox>include</label>
+					&nbsp;
+					<span id=spMsg></span>
 				</div>`
 			);
 
@@ -152,6 +154,8 @@ module.exports = {
 					else if (eid === "cmdUnselectAll") {
 						if (elSelOne) treeview_model.unselectAll(elSelOne);
 					}
+
+					treeview_model.clickContainer(container);	//update info
 				};
 
 			function setOnClick() {
@@ -187,6 +191,14 @@ module.exports = {
 			}
 
 			setOnClick();
+
+			//listen to container click event
+			container.addEventListener("click", function () {
+				setTimeout(() => {
+					document.getElementById("spMsg").textContent = container.getAttribute("tree-selected-eid-data");
+				}, 0);	//delay for linstener sequence
+			});
+	
 
 			document.getElementById("chkMultiple").onclick =
 				document.getElementById("selUpdateSel").onchange =
