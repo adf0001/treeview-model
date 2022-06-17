@@ -16,9 +16,18 @@ var el = document.getElementById('divResult3').firstChild;
 
 /*
 .addNode(elNode, options, childrenContainer)
-	options:{ (outHtml | innerHtml/content | name | nameHtml, toExpand, toExpandTemplate),
-		childrenTemplate, insert } | name.
+	options:{ (outHtml | innerHtml/content | name, toExpand, toExpandTemplate),
+		childrenTemplate, insert, sweepSpaces } | name.
 	childrenContainer: set true if the 'elNode' is already a children container; ignored if `.insert` is true;
+
+shortcuts:
+	.add(elNode, options, childrenContainer)
+
+	.insertNode(elNode, options, toNext)
+	.insert(elNode, options, toNext)
+
+	.insertNodeToNext(elNode, options)
+	.insertNext(elNode, options)
 */
 var elNode1 = treeview_model.add(el, "aaa", true);	//add by 'name'
 
@@ -33,7 +42,8 @@ var elNode3 = treeview_model.add(elNode2,	//create by template
 
 /*
 .nodePart(el, className, template, before)
-	template: { (outerHtml | innerHtml/content | createByDefault) } | innerHtml | createByDefault===true
+	template: { (outerHtml | innerHtml/content | createByDefault) } 
+		| content | createByDefault===true
 
 	shortcuts:
 		.nodeChildren(el, template)
@@ -49,17 +59,19 @@ el.onclick = function (evt) {
 	if (target.classList.contains("tree-to-expand")) {
 
 		/*
-		.setToExpandState(el, state, text, updateChildren)		//set state of 'tree-to-expand'
+		.setToExpandState(el, state, text, updateChildren)		//set state of 'tree-to-expand'.
 			state:
 				bool, or string "toggle" or "disable"
 
 			updateChildren:
-				update children part flag; default `true`;
-					true	- set css style 'display' to 'none' or '', when state is bool-value;
+				update children part flag;
+					true	- default; set css style 'display' to 'none' or '', when state is bool-value;
 					false	- do not touch 'tree-children';
 					"none"/""/string	- set css style 'display' value;
 			
 			return the to-expand element;
+
+		.getToExpandState(el)		//return null/true/false/"disable"
 		*/
 		treeview_model.setToExpandState(target, "toggle");
 
