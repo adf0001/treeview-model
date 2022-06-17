@@ -2,6 +2,8 @@
 //global variable, for html page, refer tpsvr @ npm.
 treeview_model = require("../treeview-model.js");
 
+add_css_text = require("add-css-text");
+
 //tools
 function getUpdateSel() {
 	var updateSel = document.getElementById("selUpdateSel").value;
@@ -17,7 +19,12 @@ module.exports = {
 		treeview_model = require("../level-1.js");
 
 		document.getElementById('divResult3').innerHTML =
-			"<div id=div-tool></div>" +
+			`<div id=div-tool>
+				<div style="border-bottom:1px solid gray;padding-bottom:0.3em;">
+					level-1: 
+					<span class='-ht-cmd' id=cmdBoldName>style-bold</span>/<span class='-ht-cmd' id=cmdStyleCancel title="cancel">-</span>
+				</div>
+			</div>` +
 			`<div class="tree-container" id="tree1">
 				<div class="tree-node" id=nd1>
 					<span class='tree-name'>nd1</span>
@@ -34,6 +41,18 @@ module.exports = {
 			</div>`;
 
 		var el = document.getElementById('tree1');	//container
+
+		document.getElementById("cmdBoldName").onclick =
+			document.getElementById("cmdStyleCancel").onclick =
+			function (evt) {
+				var eid = evt?.target?.id;
+				if (eid === "cmdBoldName") {
+					add_css_text(".tree-container .tree-node .tree-name{font-weight:bold;}", "tvm-test-style", true);
+				}
+				else if (eid === "cmdStyleCancel") {
+					add_css_text("", "tvm-test-style", true);
+				}
+			};
 
 		var nd3 = document.getElementById('nd3');
 		var my1 = document.getElementById('nd3my1');
@@ -198,7 +217,7 @@ module.exports = {
 					document.getElementById("spMsg").textContent = container.getAttribute("tree-selected-eid-data");
 				}, 0);	//delay for linstener sequence
 			});
-	
+
 
 			document.getElementById("chkMultiple").onclick =
 				document.getElementById("selUpdateSel").onchange =
