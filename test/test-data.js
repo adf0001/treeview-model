@@ -183,6 +183,8 @@ module.exports = {
 					treeview_model.clickContainer(container);	//update info
 				};
 
+			var myData = { a: 1 };
+
 			function setOnClick() {
 				/*
 				.listenOnClick(el, options)		//listen click event by setting container.onclick.
@@ -212,6 +214,7 @@ module.exports = {
 					updateSelection: getUpdateSel(),
 					toggleSelection: document.getElementById("chkToggleSelection").checked,
 					notifyClick: true,
+					myData: myData,
 				});
 			}
 
@@ -334,6 +337,9 @@ module.exports = {
 				treeview_model.getSelected(container, true).id === "nd5" &&
 
 				treeview_model.isSelectedMultiple(container) === false &&
+
+				//getOnClickOptions(el) 	//get the `options` argument that last call .listenOnClick()
+				myData === treeview_model.getOptions(nd5).myData &&
 
 				true
 			));
