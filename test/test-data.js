@@ -68,8 +68,8 @@ module.exports = {
 
 			/*
 			.nodePart(el, className, template, before)
-				template: { (outerHtml | innerHtml/content | createByDefault) } 
-					| content | createByDefault===true
+				template: { (outerHtml | innerHtml | createByDefault) } 
+					| innerHtml | createByDefault===true
 	
 				shortcuts:
 					.nodeChildren(el, template)
@@ -383,7 +383,7 @@ module.exports = {
 
 					/*
 					.addNode(elNode, options, childrenContainer)
-						options:{ (outHtml | innerHtml/content | name, toExpand, toExpandTemplate),
+						options:{ (outHtml | innerHtml | name, toExpand, toExpandTemplate),
 							childrenTemplate, insert, sweepSpaces } | name.
 						childrenContainer: set true if the 'elNode' is already a children container; ignored if `.insert` is true;
 					

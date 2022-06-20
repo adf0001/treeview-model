@@ -16,7 +16,7 @@ var el = document.getElementById('divResult3').firstChild;
 
 /*
 .addNode(elNode, options, childrenContainer)
-	options:{ (outHtml | innerHtml/content | name, toExpand, toExpandTemplate),
+	options:{ (outHtml | innerHtml | name, toExpand, toExpandTemplate),
 		childrenTemplate, insert, sweepSpaces } | name.
 	childrenContainer: set true if the 'elNode' is already a children container; ignored if `.insert` is true;
 
@@ -36,14 +36,14 @@ treeview_model.nodeToExpand(elNode2, true);		//create to-expand by default
 
 var elNode3 = treeview_model.add(elNode2,	//create by template
 	{
-		content: "<span class='tree-name'>ccc</span><span class='my-cls'>ddd</span>"
+		innerHtml: "<span class='tree-name'>ccc</span><span class='my-cls'>ddd</span>"
 	}
 );
 
 /*
 .nodePart(el, className, template, before)
-	template: { (outerHtml | innerHtml/content | createByDefault) } 
-		| content | createByDefault===true
+	template: { (outerHtml | innerHtml | createByDefault) } 
+		| innerHtml | createByDefault===true
 
 	shortcuts:
 		.nodeChildren(el, template)
