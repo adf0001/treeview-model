@@ -15,8 +15,8 @@ function getUpdateSel() {
 }
 
 module.exports = {
-	"level-1": function (done) {
-		treeview_model = require("../level-1.js");
+	"level-1": function (done, treeviewModel) {
+		treeview_model = treeviewModel || require("../level-1.js");
 
 		document.getElementById('divResult3').innerHTML =
 			`<div id=div-tool>
@@ -93,17 +93,19 @@ module.exports = {
 		));
 	},
 
-	"level-2": function (done) {
-		module.exports["level-1"](function (err, data) {
-			if (err) { done(err); return; }
+	"level-2": function (done, treeviewModel) {
+		//console.log(treeviewModel);
+		treeview_model = treeviewModel || require("../level-2.js");
 
-			treeview_model = require("../level-2.js");
+		module.exports["level-1"](
+			function (err, data) {
+				if (err) { done(err); return; }
 
-			var container = treeview_model.getContainer("nd1");
+				var container = treeview_model.getContainer("nd1");
 
-			var elTool = document.getElementById('div-tool');
-			elTool.insertAdjacentHTML("beforeend",
-				`<div style="border-bottom:1px solid gray;padding-bottom:0.3em;">
+				var elTool = document.getElementById('div-tool');
+				elTool.insertAdjacentHTML("beforeend",
+					`<div style="border-bottom:1px solid gray;padding-bottom:0.3em;">
 					level-2: 
 					<span class='-ht-cmd' id=cmdToggle>toggle</span>
 					<span class='-ht-cmd' id=cmdDisable>disable</span>
@@ -121,242 +123,246 @@ module.exports = {
 					&nbsp;
 					<span id=spMsg></span>
 				</div>`
-			);
+				);
 
-			document.getElementById("cmdToggle").onclick =
-				document.getElementById("cmdDisable").onclick =
-				document.getElementById("cmdClick").onclick =
-				document.getElementById("cmdClickname").onclick =
-				document.getElementById("cmdUnselect").onclick =
-				document.getElementById("cmdUnselectAll").onclick =
-				function (evt) {
-					var eid = evt?.target?.id;
+				document.getElementById("cmdToggle").onclick =
+					document.getElementById("cmdDisable").onclick =
+					document.getElementById("cmdClick").onclick =
+					document.getElementById("cmdClickname").onclick =
+					document.getElementById("cmdUnselect").onclick =
+					document.getElementById("cmdUnselectAll").onclick =
+					function (evt) {
+						var eid = evt?.target?.id;
 
-					var elSel = treeview_model.getSelected(container, true);
-					var elSelOne = (elSel instanceof Array) ? elSel[elSel.length - 1] : elSel;
+						var elSel = treeview_model.getSelected(container, true);
+						var elSelOne = (elSel instanceof Array) ? elSel[elSel.length - 1] : elSel;
 
-					if (eid === "cmdToggle" || eid === "cmdDisable") {
-						/*
-						.setToExpandState(el, state, text, updateChildren)		//set state of 'tree-to-expand'.
-							state:
-								bool, or string "toggle" or "disable"
-			
-							updateChildren:
-								update children part flag;
-									true	- default; set css style 'display' to 'none' or '', when state is bool-value;
-									false	- do not touch 'tree-children';
-									"none"/""/string	- set css style 'display' value;
+						if (eid === "cmdToggle" || eid === "cmdDisable") {
+							/*
+							.setToExpandState(el, state, text, updateChildren)		//set state of 'tree-to-expand'.
+								state:
+									bool, or string "toggle" or "disable"
+				
+								updateChildren:
+									update children part flag;
+										true	- default; set css style 'display' to 'none' or '', when state is bool-value;
+										false	- do not touch 'tree-children';
+										"none"/""/string	- set css style 'display' value;
+								
+								return the to-expand element;
+				
+							.getToExpandState(el)		//return null/true/false/"disable"
+							*/
+							if (elSelOne) treeview_model.setToExpandState(elSelOne, (eid === "cmdToggle") ? "toggle" : "disable");
+						}
+						else if (eid === "cmdClick") {
+							/*
+							.clickPart(el, className, delay)
+				
+							shortcuts
+								.clickName(el, delay)
+								.clickToExpand(el, delay)
+								.clickContainer(el, delay)
+							*/
+							if (elSelOne) treeview_model.clickToExpand(elSelOne);
+						}
+						else if (eid === "cmdClickname") {
+							if (elSelOne) treeview_model.clickName(elSelOne);
+						}
+						else if (eid === "cmdUnselect") {
+							/*
+							.unselectInElement(el, include)		//return unselect count
+				
+							shortcuts:
+								.unselectAll(el)
+							*/
+							if (elSelOne) treeview_model.unselectInElement(elSelOne, document.getElementById("chkIncude").checked);
+						}
+						else if (eid === "cmdUnselectAll") {
+							if (elSelOne) treeview_model.unselectAll(elSelOne);
+						}
+
+						treeview_model.clickContainer(container);	//update info
+					};
+
+				var myData = { a: 1 };
+
+				function setOnClick() {
+					/*
+					.listenOnClick(el, options)		//listen click event by setting container.onclick.
+						options:
+							.multipleSelection
+								boolean type; multiple selection flag;
+		
+							.updateSelection
+								false		//default
+									don't touch selection; 
+								true/"remove"
+									remove the collapsed nodes from the selection;
+								"shift"
+									remove the collapsed nodes from the selection;
+										and if any node is removed from the selection,
+											add the node that casused collapsing to the selection;
+		
+							.toggleSelection
+								boolean type; selection can be canceled by another click;
 							
-							return the to-expand element;
-			
-						.getToExpandState(el)		//return null/true/false/"disable"
-						*/
-						if (elSelOne) treeview_model.setToExpandState(elSelOne, (eid === "cmdToggle") ? "toggle" : "disable");
-					}
-					else if (eid === "cmdClick") {
-						/*
-						.clickPart(el, className, delay)
-			
-						shortcuts
-							.clickName(el, delay)
-							.clickToExpand(el, delay)
-							.clickContainer(el, delay)
-						*/
-						if (elSelOne) treeview_model.clickToExpand(elSelOne);
-					}
-					else if (eid === "cmdClickname") {
-						if (elSelOne) treeview_model.clickName(elSelOne);
-					}
-					else if (eid === "cmdUnselect") {
-						/*
-						.unselectInElement(el, include)		//return unselect count
-			
-						shortcuts:
-							.unselectAll(el)
-						*/
-						if (elSelOne) treeview_model.unselectInElement(elSelOne, document.getElementById("chkIncude").checked);
-					}
-					else if (eid === "cmdUnselectAll") {
-						if (elSelOne) treeview_model.unselectAll(elSelOne);
-					}
+							.notifyClick
+								set a click event to container after setting container.onclick;
+					*/
 
-					treeview_model.clickContainer(container);	//update info
-				};
+					treeview_model.listenOnClick(container, {
+						multipleSelection: document.getElementById("chkMultiple").checked,
+						updateSelection: getUpdateSel(),
+						toggleSelection: document.getElementById("chkToggleSelection").checked,
+						notifyClick: true,
+						myData: myData,
+					});
+				}
 
-			var myData = { a: 1 };
+				setOnClick();
 
-			function setOnClick() {
-				/*
-				.listenOnClick(el, options)		//listen click event by setting container.onclick.
-					options:
-						.multipleSelection
-							boolean type; multiple selection flag;
-	
-						.updateSelection
-							false		//default
-								don't touch selection; 
-							true/"remove"
-								remove the collapsed nodes from the selection;
-							"shift"
-								remove the collapsed nodes from the selection;
-									and if any node is removed from the selection,
-										add the node that casused collapsing to the selection;
-	
-						.toggleSelection
-							boolean type; selection can be canceled by another click;
-						
-						.notifyClick
-							set a click event to container after setting container.onclick;
-				*/
-
-				treeview_model.listenOnClick(container, {
-					multipleSelection: document.getElementById("chkMultiple").checked,
-					updateSelection: getUpdateSel(),
-					toggleSelection: document.getElementById("chkToggleSelection").checked,
-					notifyClick: true,
-					myData: myData,
+				//listen to container click event
+				container.addEventListener("click", function () {
+					setTimeout(() => {
+						document.getElementById("spMsg").textContent = container.getAttribute("tree-selected-eid-data");
+					}, 0);	//delay for linstener sequence
 				});
-			}
-
-			setOnClick();
-
-			//listen to container click event
-			container.addEventListener("click", function () {
-				setTimeout(() => {
-					document.getElementById("spMsg").textContent = container.getAttribute("tree-selected-eid-data");
-				}, 0);	//delay for linstener sequence
-			});
 
 
-			document.getElementById("chkMultiple").onclick =
-				document.getElementById("selUpdateSel").onchange =
-				document.getElementById("chkToggleSelection").onclick = setOnClick;
+				document.getElementById("chkMultiple").onclick =
+					document.getElementById("selUpdateSel").onchange =
+					document.getElementById("chkToggleSelection").onclick = setOnClick;
 
-			treeview_model.nodeChildren('nd3my1', true).insertAdjacentHTML(
-				"beforeend",
-				`
+				treeview_model.nodeChildren('nd3my1', true).insertAdjacentHTML(
+					"beforeend",
+					`
 				<div class="tree-node" id=nd5>
 					<span class='tree-name'>nd5</span>
 				</div>
 				<div class="tree-node" id=nd6>
 					<span class='tree-name'>nd6</span>
 				</div>`
-			);
+				);
 
-			treeview_model.nodeChildren('nd5', true).insertAdjacentHTML(
-				"beforeend",
-				`
+				treeview_model.nodeChildren('nd5', true).insertAdjacentHTML(
+					"beforeend",
+					`
 				<div class="tree-node" id=nd7>
 					<span class='tree-name'>nd7</span>
 				</div>
 				<div class="tree-node" id=nd8>
 					<span class='tree-name'>nd8</span>
 				</div>`
-			);
+				);
 
-			var nd1 = document.getElementById('nd1');
-			var nd3 = document.getElementById('nd3');
-			var nd5 = document.getElementById('nd5');
+				var nd1 = document.getElementById('nd1');
+				var nd3 = document.getElementById('nd3');
+				var nd5 = document.getElementById('nd5');
 
-			treeview_model.setToExpandState(nd1, "toggle");
-			treeview_model.setToExpandState(nd3, "disable");
+				treeview_model.setToExpandState(nd1, "toggle");
+				treeview_model.setToExpandState(nd3, "disable");
 
-			/*
-			.setNodeClass(el, className, value [, toContainer [, multiple ]] )	//set node class
-				toContainer
-					false
-						only set current node class, don't save data to container;
-					true
-						save node eid data to container attribute className+"-eid-data";
-	
-						if "multiple" is false
-							if "value" is true, toggle the last;
-							then save eid as a json string object, or null;
-						if "multiple" is true
-							save as eid array, or empty array;
-						if "multiple" is `undefined`
-							get current "multiple" from the data, then save;
-				value
-					boolean type;
-					when toContainer is true,
-						set true to add to the container attribute;
-						set false to remove from the container attribute;
+				/*
+				.setNodeClass(el, className, value [, toContainer [, multiple ]] )	//set node class
+					toContainer
+						false
+							only set current node class, don't save data to container;
+						true
+							save node eid data to container attribute className+"-eid-data";
 		
-			//shortcut for getNodeClass()/setNodeClass()/getClassNode()
-			.nodeClass(el, className, boolValue, toOrFromContainer, multiple)
+							if "multiple" is false
+								if "value" is true, toggle the last;
+								then save eid as a json string object, or null;
+							if "multiple" is true
+								save as eid array, or empty array;
+							if "multiple" is `undefined`
+								get current "multiple" from the data, then save;
+					value
+						boolean type;
+						when toContainer is true,
+							set true to add to the container attribute;
+							set false to remove from the container attribute;
+			
+				//shortcut for getNodeClass()/setNodeClass()/getClassNode()
+				.nodeClass(el, className, boolValue, toOrFromContainer, multiple)
+	
+				//get multiple state from container
+				.isClassNodeMultiple(el, className)
+	
+				shortcuts:
+					//shortcut for "tree-selected"
+					.selectedState(el, boolValue, toOrFromContainer, multiple)
+					.getSelected(el, fromContainer)
+					.isSelectedMultiple(el)
+					.unselectInElement(el, include)
+					.unselectAll(el)
+				*/
+				treeview_model.nodeClass(nd5, "my-cls1", true);
+				treeview_model.nodeClass(nd5, "my-cls2", true, true);
+				treeview_model.nodeClass(nd5, "my-cls3", true, true, true);
+				treeview_model.nodeClass(nd5, "my-cls4", true);
+				treeview_model.nodeClass(nd5, "my-cls4", false);
 
-			//get multiple state from container
-			.isClassNodeMultiple(el, className)
+				treeview_model.clickName(nd5);
 
-			shortcuts:
-				//shortcut for "tree-selected"
-				.selectedState(el, boolValue, toOrFromContainer, multiple)
-				.getSelected(el, fromContainer)
-				.isSelectedMultiple(el)
-				.unselectInElement(el, include)
-				.unselectAll(el)
-			*/
-			treeview_model.nodeClass(nd5, "my-cls1", true);
-			treeview_model.nodeClass(nd5, "my-cls2", true, true);
-			treeview_model.nodeClass(nd5, "my-cls3", true, true, true);
-			treeview_model.nodeClass(nd5, "my-cls4", true);
-			treeview_model.nodeClass(nd5, "my-cls4", false);
+				done(!(
+					treeview_model.getToExpandState(nd1) === false &&
+					treeview_model.getToExpandState(nd3) === "disable" &&
+					treeview_model.getToExpandState(nd5) === null &&
 
-			treeview_model.clickName(nd5);
+					nd5.classList.contains("my-cls1") &&
+					nd5.classList.contains("my-cls2") &&
+					nd5.classList.contains("my-cls3") &&
 
-			done(!(
-				treeview_model.getToExpandState(nd1) === false &&
-				treeview_model.getToExpandState(nd3) === "disable" &&
-				treeview_model.getToExpandState(nd5) === null &&
+					container.getAttribute("my-cls1-eid-data") === null &&
+					container.getAttribute("my-cls2-eid-data") === '"nd5"' &&
+					container.getAttribute("my-cls3-eid-data") === '["nd5"]' &&
 
-				nd5.classList.contains("my-cls1") &&
-				nd5.classList.contains("my-cls2") &&
-				nd5.classList.contains("my-cls3") &&
+					treeview_model.getNodeClass(nd5, "my-cls1") === true &&
+					treeview_model.getNodeClass(nd5, "my-cls2") === true &&
+					treeview_model.getNodeClass(nd5, "my-cls3") === true &&
+					treeview_model.getNodeClass(nd5, "my-cls4") === false &&
 
-				container.getAttribute("my-cls1-eid-data") === null &&
-				container.getAttribute("my-cls2-eid-data") === '"nd5"' &&
-				container.getAttribute("my-cls3-eid-data") === '["nd5"]' &&
+					typeof treeview_model.nodeClass(container, "my-cls1", void 0, true) === "undefined" &&
+					treeview_model.nodeClass(container, "my-cls2", void 0, true).id === "nd5" &&
+					treeview_model.nodeClass(container, "my-cls3", void 0, true)[0].id === "nd5" &&
 
-				treeview_model.getNodeClass(nd5, "my-cls1") === true &&
-				treeview_model.getNodeClass(nd5, "my-cls2") === true &&
-				treeview_model.getNodeClass(nd5, "my-cls3") === true &&
-				treeview_model.getNodeClass(nd5, "my-cls4") === false &&
+					treeview_model.getClassNode(container, "my-cls2").id === "nd5" &&
+					treeview_model.getClassNode(container, "my-cls3")[0].id === "nd5" &&
 
-				typeof treeview_model.nodeClass(container, "my-cls1", void 0, true) === "undefined" &&
-				treeview_model.nodeClass(container, "my-cls2", void 0, true).id === "nd5" &&
-				treeview_model.nodeClass(container, "my-cls3", void 0, true)[0].id === "nd5" &&
+					treeview_model.isClassNodeMultiple(container, "my-cls2") === false &&
+					treeview_model.isClassNodeMultiple(container, "my-cls3") === true &&
 
-				treeview_model.getClassNode(container, "my-cls2").id === "nd5" &&
-				treeview_model.getClassNode(container, "my-cls3")[0].id === "nd5" &&
+					treeview_model.getSelected(nd5) === true &&
+					treeview_model.getSelected(nd5, true).id === "nd5" &&
+					treeview_model.getSelected(container, true).id === "nd5" &&
 
-				treeview_model.isClassNodeMultiple(container, "my-cls2") === false &&
-				treeview_model.isClassNodeMultiple(container, "my-cls3") === true &&
+					treeview_model.isSelectedMultiple(container) === false &&
 
-				treeview_model.getSelected(nd5) === true &&
-				treeview_model.getSelected(nd5, true).id === "nd5" &&
-				treeview_model.getSelected(container, true).id === "nd5" &&
+					//getOnClickOptions(el) 	//get the `options` argument that last call .listenOnClick()
+					myData === treeview_model.getOptions(nd5).myData &&
 
-				treeview_model.isSelectedMultiple(container) === false &&
-
-				//getOnClickOptions(el) 	//get the `options` argument that last call .listenOnClick()
-				myData === treeview_model.getOptions(nd5).myData &&
-
-				true
-			));
-		})
+					true
+				));
+			},
+			treeview_model
+		);
 	},
 
-	"level-3": function (done) {
-		module.exports["level-2"](function (err, data) {
-			if (err) { done(err); return; }
+	"level-3": function (done, treeviewModel) {
+		treeview_model = treeviewModel || require("../level-3.js");
 
-			treeview_model = require("../level-3.js");
+		module.exports["level-2"](
+			function (err, data) {
+				if (err) { done(err); return; }
 
-			var container = treeview_model.getContainer("nd1");
 
-			var elTool = document.getElementById('div-tool');
-			elTool.insertAdjacentHTML("beforeend",
-				`<div style="border-bottom:1px solid gray;padding-bottom:0.3em;">
+				var container = treeview_model.getContainer("nd1");
+
+				var elTool = document.getElementById('div-tool');
+				elTool.insertAdjacentHTML("beforeend",
+					`<div style="border-bottom:1px solid gray;padding-bottom:0.3em;">
 					level-3: 
 					<span class='-ht-cmd' id=cmdAdd>add</span>/<span class='-ht-cmd' id=cmdAdd2>2</span> &nbsp;
 					<span class='-ht-cmd' id=cmdInsert>insert</span>/<span class='-ht-cmd' id=cmdInsert2>2</span> &nbsp;
@@ -364,157 +370,159 @@ module.exports = {
 					<span class='-ht-cmd' id=cmdRemove>remove</span>/<span class='-ht-cmd' id=cmdRemoveChildren title="remove only children">ch</span> &nbsp;
 					<span class='-ht-cmd' id=cmdUpdate>update</span> &nbsp;
 				</div>`
-			);
+				);
 
-			document.getElementById("cmdAdd").onclick =
-				document.getElementById("cmdAdd2").onclick =
-				document.getElementById("cmdInsert").onclick =
-				document.getElementById("cmdInsert2").onclick =
-				document.getElementById("cmdInsertNext").onclick =
-				document.getElementById("cmdInsertNext2").onclick =
-				document.getElementById("cmdRemove").onclick =
-				document.getElementById("cmdRemoveChildren").onclick =
-				document.getElementById("cmdUpdate").onclick =
-				function (evt) {
-					var eid = evt?.target?.id;
+				document.getElementById("cmdAdd").onclick =
+					document.getElementById("cmdAdd2").onclick =
+					document.getElementById("cmdInsert").onclick =
+					document.getElementById("cmdInsert2").onclick =
+					document.getElementById("cmdInsertNext").onclick =
+					document.getElementById("cmdInsertNext2").onclick =
+					document.getElementById("cmdRemove").onclick =
+					document.getElementById("cmdRemoveChildren").onclick =
+					document.getElementById("cmdUpdate").onclick =
+					function (evt) {
+						var eid = evt?.target?.id;
 
-					var elSel = treeview_model.getSelected(container, true);
-					var elSelOne = (elSel instanceof Array) ? elSel[elSel.length - 1] : elSel;
+						var elSel = treeview_model.getSelected(container, true);
+						var elSelOne = (elSel instanceof Array) ? elSel[elSel.length - 1] : elSel;
 
-					/*
-					.addNode(elNode, options, childrenContainer)
-						options:{ (outHtml | innerHtml | name, toExpand, toExpandTemplate),
-							childrenTemplate, insert, sweepSpaces } | name.
-						childrenContainer: set true if the 'elNode' is already a children container; ignored if `.insert` is true;
-					
-					shortcuts:
-						.add(elNode, options, childrenContainer)
-			
-						.insertNode(elNode, options, toNext)
-						.insert(elNode, options, toNext)
-			
-						.insertNodeToNext(elNode, options)
-						.insertNext(elNode, options)
-					*/
-
-					var elNew;
-					var newName = (new Date()).toLocaleString();
-
-					if (eid === "cmdAdd") {
-						elNew = treeview_model.add(elSelOne || container, newName, !elSelOne);
-					}
-					else if (eid === "cmdAdd2") {
-						elNew = treeview_model.add(elSelOne || container, newName + "<b>-1</b>", !elSelOne);
-						elNew = treeview_model.add(elSelOne || container, { nameHtml: newName + "<b>-2</b>" }, !elSelOne);
-					}
-					else if (eid === "cmdInsert") {
-						elNew = treeview_model.insert(elSelOne, newName);
-					}
-					else if (eid === "cmdInsert2") {
-						elNew = treeview_model.insert(elSelOne, newName + "<b>-3</b>");
-						elNew = treeview_model.insert(elSelOne, { nameHtml: newName + "<b>-4</b>" });
-					}
-					else if (eid === "cmdInsertNext") {
-						elNew = treeview_model.insertNext(elSelOne, newName);
-					}
-					else if (eid === "cmdInsertNext2") {
-						elNew = treeview_model.insertNext(elSelOne, newName + "<b>-5</b>");
-						elNew = treeview_model.insertNext(elSelOne, { nameHtml: newName + "<b>-6</b>" });
-					}
-					else if (eid === "cmdRemove") {
 						/*
-						.removeNode(elNode, options)		//remove node
-							options:
-								.onlyChildren
-									set true to remove only the children, not the elNode itself;
-						
-								.removeEmptyChildren
-									set true remove empty tree-children;
-						
-								.updateSelection
-									true/false/any-others		//default
-										remove the disappeared nodes from the selection;
-									"shift"
-										remove the disppeared nodes from the selection;
-											and if any node is removed from the selection,
-												add the next/previous/parent node to the selection;
-						
-							return true if finished
+						.addNode(elNode, options, childrenContainer)
+							options:{ (outHtml | innerHtml | name, toExpand, toExpandTemplate),
+								childrenTemplate, insert, sweepSpaces } | name.
+							childrenContainer: set true if the 'elNode' is already a children container; ignored if `.insert` is true;
 						
 						shortcuts:
-							.removeAllChildren(elNode, options)
+							.add(elNode, options, childrenContainer)
+				
+							.insertNode(elNode, options, toNext)
+							.insert(elNode, options, toNext)
+				
+							.insertNodeToNext(elNode, options)
+							.insertNext(elNode, options)
 						*/
 
-						treeview_model.remove(elSel, {
-							updateSelection: getUpdateSel()
-						});
-					}
-					else if (eid === "cmdRemoveChildren") {
-						treeview_model.removeChildren(elSel, {
-							updateSelection: getUpdateSel()
-						});
-					}
-					else if (eid === "cmdUpdate") {
-						if (elSelOne) {
-							treeview_model.nodeName(elSelOne).textContent = newName;
+						var elNew;
+						var newName = (new Date()).toLocaleString();
+
+						if (eid === "cmdAdd") {
+							elNew = treeview_model.add(elSelOne || container, newName, !elSelOne);
 						}
-					}
+						else if (eid === "cmdAdd2") {
+							elNew = treeview_model.add(elSelOne || container, newName + "<b>-1</b>", !elSelOne);
+							elNew = treeview_model.add(elSelOne || container, { nameHtml: newName + "<b>-2</b>" }, !elSelOne);
+						}
+						else if (eid === "cmdInsert") {
+							elNew = treeview_model.insert(elSelOne, newName);
+						}
+						else if (eid === "cmdInsert2") {
+							elNew = treeview_model.insert(elSelOne, newName + "<b>-3</b>");
+							elNew = treeview_model.insert(elSelOne, { nameHtml: newName + "<b>-4</b>" });
+						}
+						else if (eid === "cmdInsertNext") {
+							elNew = treeview_model.insertNext(elSelOne, newName);
+						}
+						else if (eid === "cmdInsertNext2") {
+							elNew = treeview_model.insertNext(elSelOne, newName + "<b>-5</b>");
+							elNew = treeview_model.insertNext(elSelOne, { nameHtml: newName + "<b>-6</b>" });
+						}
+						else if (eid === "cmdRemove") {
+							/*
+							.removeNode(elNode, options)		//remove node
+								options:
+									.onlyChildren
+										set true to remove only the children, not the elNode itself;
+							
+									.removeEmptyChildren
+										set true remove empty tree-children;
+							
+									.updateSelection
+										true/false/any-others		//default
+											remove the disappeared nodes from the selection;
+										"shift"
+											remove the disppeared nodes from the selection;
+												and if any node is removed from the selection,
+													add the next/previous/parent node to the selection;
+							
+								return true if finished
+							
+							shortcuts:
+								.removeAllChildren(elNode, options)
+							*/
 
-					if (elNew && !treeview_model.isSelectedMultiple(elNew)) {
-						treeview_model.clickName(elNew);
-					}
-				};
+							treeview_model.remove(elSel, {
+								updateSelection: getUpdateSel()
+							});
+						}
+						else if (eid === "cmdRemoveChildren") {
+							treeview_model.removeChildren(elSel, {
+								updateSelection: getUpdateSel()
+							});
+						}
+						else if (eid === "cmdUpdate") {
+							if (elSelOne) {
+								treeview_model.nodeName(elSelOne).textContent = newName;
+							}
+						}
 
-			treeview_model.add(
-				'nd5',
-				{
-					outerHtml: `
+						if (elNew && !treeview_model.isSelectedMultiple(elNew)) {
+							treeview_model.clickName(elNew);
+						}
+					};
+
+				treeview_model.add(
+					'nd5',
+					{
+						outerHtml: `
 						<div class="tree-node" id=nd9>
 							<span class='tree-name'>nd9</span>
 						</div>
 						<div class="tree-node" id=nd10>
 							<span class='tree-name'>nd10</span>
 						</div>`,
-					sweepSpaces: true,
-				}
-			);
+						sweepSpaces: true,
+					}
+				);
 
-			//.getNodeInfo(elNode, onlyTreeNode)
-			//get a NodeInfo, that is, [elNode]/[elChildren,"children"]/[elContainer, "container"]
+				//.getNodeInfo(elNode, onlyTreeNode)
+				//get a NodeInfo, that is, [elNode]/[elChildren,"children"]/[elContainer, "container"]
 
-			var nd5 = document.getElementById("nd5");
+				var nd5 = document.getElementById("nd5");
 
-			var nf1 = treeview_model.getNodeInfo(nd5);
-			var nf1b = treeview_model.getNodeInfo("nd5", true);
-			var nf1c = treeview_model.getNodeInfo(nf1, true);
+				var nf1 = treeview_model.getNodeInfo(nd5);
+				var nf1b = treeview_model.getNodeInfo("nd5", true);
+				var nf1c = treeview_model.getNodeInfo(nf1, true);
 
-			var nd5Children = treeview_model.nodeChildren("nd5");	//a children part
-			var nf2 = treeview_model.getNodeInfo(nd5Children);
-			var nf2b = treeview_model.getNodeInfo(nd5Children, true);
+				var nd5Children = treeview_model.nodeChildren("nd5");	//a children part
+				var nf2 = treeview_model.getNodeInfo(nd5Children);
+				var nf2b = treeview_model.getNodeInfo(nd5Children, true);
 
-			var nf3 = treeview_model.getNodeInfo(container);	//the container
-			var nf3b = treeview_model.getNodeInfo(container, true);
+				var nf3 = treeview_model.getNodeInfo(container);	//the container
+				var nf3b = treeview_model.getNodeInfo(container, true);
 
-			var { INFO_NODE, INFO_TYPE } = treeview_model;
+				var { INFO_NODE, INFO_TYPE } = treeview_model;
 
-			done(!(
-				nf1[INFO_NODE] === nd5 &&
-				!nf1[INFO_TYPE] &&
-				nf1b[INFO_NODE] === nd5 &&
-				!nf1b[INFO_TYPE] &&
-				nf1 === nf1c &&
+				done(!(
+					nf1[INFO_NODE] === nd5 &&
+					!nf1[INFO_TYPE] &&
+					nf1b[INFO_NODE] === nd5 &&
+					!nf1b[INFO_TYPE] &&
+					nf1 === nf1c &&
 
-				nf2[INFO_NODE] === nd5Children &&
-				nf2[INFO_TYPE] === "children" &&
-				nf2b === null &&
+					nf2[INFO_NODE] === nd5Children &&
+					nf2[INFO_TYPE] === "children" &&
+					nf2b === null &&
 
-				nf3[INFO_NODE] === container &&
-				nf3[INFO_TYPE] === "container" &&
-				nf3b === null &&
+					nf3[INFO_NODE] === container &&
+					nf3[INFO_TYPE] === "container" &&
+					nf3b === null &&
 
-				true
-			));
-		})
+					true
+				));
+			},
+			treeview_model
+		);
 	},
 
 	"check exports": function (done) {
