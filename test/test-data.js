@@ -382,52 +382,76 @@ module.exports = {
 					document.getElementById("cmdRemoveChildren").onclick =
 					document.getElementById("cmdUpdate").onclick =
 					function (evt) {
-						var eid = evt?.target?.id;
+						var cmdId = evt?.target?.id;
 
 						var elSel = treeview_model.getSelected(container, true);
 						var elSelOne = (elSel instanceof Array) ? elSel[elSel.length - 1] : elSel;
 
-						/*
-						.addNode(elNode, options, childrenContainer)
-							options:{ (outHtml | innerHtml | name, toExpand, toExpandTemplate),
-								childrenTemplate, insert, sweepSpaces } | name.
-							childrenContainer: set true if the 'elNode' is already a children container; ignored if `.insert` is true;
+						/*					
+						addNode(el, content | name, options, childrenContainer)		//add node
 						
-						shortcuts:
-							.add(elNode, options, childrenContainer)
-				
-							.insertNode(elNode, options, toNext)
-							.insert(elNode, options, toNext)
-				
-							.insertNodeToNext(elNode, options)
-							.insertNext(elNode, options)
+							content:
+								.outerHtml
+									outer html;
+								.innerHtml
+									inner html; ignore if 'outerHtml' existed;
+								.nameHtml
+									name html, fast but not safe; ignore if 'innerHtml/outerHtml' existed;
+								.name
+									safe name text; ignore if 'outerHtml/innerHtml/nameHtml' existed;
+								
+							options:
+								.toExpand
+									flag to add to-expand part or not; default `true`;
+						
+								.toExpandTemplate
+									a user-defined to-expand part template;
+						
+								.childrenTemplate
+									a user-defined children part template;
+						
+								.insert
+									insert mode;
+								
+								.sweepSpaces
+									remove all text nodes that contains only spaces;
+							
+							.childrenContainer:
+								true / "true"
+									indicated the 'el' is already a children container;
+										in this case, the parent to-expand state will be untouched;
+										it's caller's duty to update it;
+						
+									when `options.insert` is true, the function fail;
+						
+									a string "true" will skip node type checking;
 						*/
 
 						var elNew;
 						var newName = (new Date()).toLocaleString();
 
-						if (eid === "cmdAdd") {
-							elNew = treeview_model.add(elSelOne || container, newName, !elSelOne);
+						if (cmdId === "cmdAdd") {
+							elNew = treeview_model.add(elSelOne || container, newName, null, !elSelOne);
 						}
-						else if (eid === "cmdAdd2") {
-							elNew = treeview_model.add(elSelOne || container, newName + "<b>-1</b>", !elSelOne);
-							elNew = treeview_model.add(elSelOne || container, { nameHtml: newName + "<b>-2</b>" }, !elSelOne);
+						else if (cmdId === "cmdAdd2") {
+							elNew = treeview_model.add(elSelOne || container, newName + "<b>-1</b>", null, !elSelOne);
+							elNew = treeview_model.add(elSelOne || container, { nameHtml: newName + "<b>-2</b>" }, null, !elSelOne);
 						}
-						else if (eid === "cmdInsert") {
+						else if (cmdId === "cmdInsert") {
 							elNew = treeview_model.insert(elSelOne, newName);
 						}
-						else if (eid === "cmdInsert2") {
+						else if (cmdId === "cmdInsert2") {
 							elNew = treeview_model.insert(elSelOne, newName + "<b>-3</b>");
 							elNew = treeview_model.insert(elSelOne, { nameHtml: newName + "<b>-4</b>" });
 						}
-						else if (eid === "cmdInsertNext") {
+						else if (cmdId === "cmdInsertNext") {
 							elNew = treeview_model.insertNext(elSelOne, newName);
 						}
-						else if (eid === "cmdInsertNext2") {
+						else if (cmdId === "cmdInsertNext2") {
 							elNew = treeview_model.insertNext(elSelOne, newName + "<b>-5</b>");
 							elNew = treeview_model.insertNext(elSelOne, { nameHtml: newName + "<b>-6</b>" });
 						}
-						else if (eid === "cmdRemove") {
+						else if (cmdId === "cmdRemove") {
 							/*
 							.removeNode(elNode, options)		//remove node
 								options:
@@ -455,12 +479,12 @@ module.exports = {
 								updateSelection: getUpdateSel()
 							});
 						}
-						else if (eid === "cmdRemoveChildren") {
+						else if (cmdId === "cmdRemoveChildren") {
 							treeview_model.removeChildren(elSel, {
 								updateSelection: getUpdateSel()
 							});
 						}
-						else if (eid === "cmdUpdate") {
+						else if (cmdId === "cmdUpdate") {
 							if (elSelOne) {
 								treeview_model.nodeName(elSelOne).textContent = newName;
 							}
@@ -481,8 +505,8 @@ module.exports = {
 						<div class="tree-node" id=nd10>
 							<span class='tree-name'>nd10</span>
 						</div>`,
-						sweepSpaces: true,
-					}
+					},
+					{ sweepSpaces: true, }
 				);
 
 				//.getNodeInfo(elNode, onlyTreeNode)
