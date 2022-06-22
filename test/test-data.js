@@ -45,11 +45,11 @@ module.exports = {
 		document.getElementById("cmdBoldName").onclick =
 			document.getElementById("cmdStyleCancel").onclick =
 			function (evt) {
-				var eid = evt?.target?.id;
-				if (eid === "cmdBoldName") {
+				var cmdId = evt?.target?.id;
+				if (cmdId === "cmdBoldName") {
 					add_css_text(".tree-container .tree-node .tree-name{font-weight:bold;}", "tvm-test-style", true);
 				}
-				else if (eid === "cmdStyleCancel") {
+				else if (cmdId === "cmdStyleCancel") {
 					add_css_text("", "tvm-test-style", true);
 				}
 			};
@@ -136,12 +136,12 @@ module.exports = {
 					document.getElementById("cmdUnselect").onclick =
 					document.getElementById("cmdUnselectAll").onclick =
 					function (evt) {
-						var eid = evt?.target?.id;
+						var cmdId = evt?.target?.id;
 
 						var elSel = treeview_model.getSelected(container, true);
 						var elSelOne = (elSel instanceof Array) ? elSel[elSel.length - 1] : elSel;
 
-						if (eid === "cmdToggle" || eid === "cmdDisable") {
+						if (cmdId === "cmdToggle" || cmdId === "cmdDisable") {
 							/*
 							.setToExpandState(el, state, text, updateChildren)		//set state of 'tree-to-expand'.
 								state:
@@ -157,9 +157,9 @@ module.exports = {
 				
 							.getToExpandState(el)		//return null/true/false/"disable"
 							*/
-							if (elSelOne) treeview_model.setToExpandState(elSelOne, (eid === "cmdToggle") ? "toggle" : "disable");
+							if (elSelOne) treeview_model.setToExpandState(elSelOne, (cmdId === "cmdToggle") ? "toggle" : "disable");
 						}
-						else if (eid === "cmdClick") {
+						else if (cmdId === "cmdClick") {
 							/*
 							.clickPart(el, className, delay)
 				
@@ -170,10 +170,10 @@ module.exports = {
 							*/
 							if (elSelOne) treeview_model.clickToExpand(elSelOne);
 						}
-						else if (eid === "cmdClickname") {
+						else if (cmdId === "cmdClickname") {
 							if (elSelOne) treeview_model.clickName(elSelOne);
 						}
-						else if (eid === "cmdUnselect") {
+						else if (cmdId === "cmdUnselect") {
 							/*
 							.unselectInElement(el, include)		//return unselect count
 				
@@ -182,7 +182,7 @@ module.exports = {
 							*/
 							if (elSelOne) treeview_model.unselectInElement(elSelOne, document.getElementById("chkIncude").checked);
 						}
-						else if (eid === "cmdUnselectAll") {
+						else if (cmdId === "cmdUnselectAll") {
 							if (elSelOne) treeview_model.unselectAll(elSelOne);
 						}
 
