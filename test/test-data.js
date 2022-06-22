@@ -89,6 +89,10 @@ module.exports = {
 			JSON.stringify(treeview_model.containerAttribute(my1, "bb")) === '{"b":22}' &&
 			treeview_model.containerAttr(my1, "bb", void 0, false) === '{"b":22}' &&
 
+			treeview_model.isContainer(el) &&
+			treeview_model.isPart(nd3, "tree-node") &&
+			treeview_model.isPart(nd3.parentNode, "tree-children") &&
+
 			true
 		));
 	},
