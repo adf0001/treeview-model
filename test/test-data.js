@@ -225,7 +225,8 @@ module.exports = {
 				//listen to container click event
 				container.addEventListener("click", function () {
 					setTimeout(() => {
-						document.getElementById("spMsg").textContent = container.getAttribute("tree-selected-eid-data");
+						document.getElementById("spMsg").textContent = container.getAttribute("tree-selected-eid-data") +
+							" " + container.getAttribute("tree-selected-last-eid");
 					}, 0);	//delay for linstener sequence
 				});
 
