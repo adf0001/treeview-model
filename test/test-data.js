@@ -430,6 +430,15 @@ module.exports = {
 									when `options.insert` is true, the function fail;
 						
 									a string "true" will skip node type checking;
+						
+						shortcuts:
+							.add(elNode, content, options, childrenContainer)
+
+							.insertNode(elNode, content, options, toNext)
+							.insert(elNode, content, options, toNext)
+
+							.insertNodeToNext(elNode, content, options)
+							.insertNext(elNode, content, options)
 						*/
 
 						var elNew;

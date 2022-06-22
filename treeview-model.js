@@ -23,7 +23,8 @@ convention:
 	lv1:			<div class='tree-children'>...</div>		//required if a node contains children;
 				</div>
 
-	lv2:		<div class='tree-node tree-selected'>...</div>	//tree-node selected state, optional;
+	lv2:		<div class='tree-node tree-selected tree-selected-last'>...</div>
+																//tree-node selected state, optional;
 
 			</div>
 

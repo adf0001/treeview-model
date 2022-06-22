@@ -10,81 +10,64 @@ npm install treeview-model
 
 var treeview_model = require("treeview-model");
 
-document.getElementById('divResult3').innerHTML = '<div></div>';
+document.getElementById('divResult3').innerHTML =
+	`<div class="tree-container" id="tree1">
+		<div class="tree-node" id=nd1>
+			<span class='tree-name'>nd1</span>
+			<div class="tree-children">
+				<div class="tree-node" id=nd2>
+					<span class='tree-name'>nd2</span>
+				</div>
+				<div class="tree-node" id=nd3>
+					<span class='tree-name' id=name3>nd3</span>
+					<span class='my-1' id=nd3my1>-my1</span>
+				</div>
+			</div>
+		</div>
+	</div>`;
 
-var el = document.getElementById('divResult3').firstChild;
+var el = document.getElementById('tree1');	//container
 
-/*
-.addNode(elNode, options, childrenContainer)
-	options:{ (outHtml | innerHtml | name, toExpand, toExpandTemplate),
-		childrenTemplate, insert, sweepSpaces } | name.
-	childrenContainer: set true if the 'elNode' is already a children container; ignored if `.insert` is true;
+var nd3 = document.getElementById('nd3');
+var my1 = document.getElementById('nd3my1');
 
-shortcuts:
-	.add(elNode, options, childrenContainer)
-
-	.insertNode(elNode, options, toNext)
-	.insert(elNode, options, toNext)
-
-	.insertNodeToNext(elNode, options)
-	.insertNext(elNode, options)
-*/
-var elNode1 = treeview_model.add(el, "aaa", true);	//add by 'name'
-
-var elNode2 = treeview_model.add(elNode1, "bbb");
-treeview_model.nodeToExpand(elNode2, true);		//create to-expand by default
-
-var elNode3 = treeview_model.add(elNode2,	//create by template
-	{
-		innerHtml: "<span class='tree-name'>ccc</span><span class='my-cls'>ddd</span>"
-	}
-);
-
-/*
-.nodePart(el, className, template, before)
-	template: { (outerHtml | innerHtml | createByDefault) } 
-		| innerHtml | createByDefault===true
-
-	shortcuts:
-		.nodeChildren(el, template)
-		.nodeName(el, template)
-		.nodeToExpand(el, template, before)
-*/
-var elMy1 = treeview_model.nodePart(elNode3, "my-cls");
-var elMy2 = treeview_model.nodePart(elNode3, "my-cls2", true);	//create part if not exist, by default
-
-el.onclick = function (evt) {
-	var target = evt.target;
-
-	if (target.classList.contains("tree-to-expand")) {
-
-		/*
-		.setToExpandState(el, state, text, updateChildren)		//set state of 'tree-to-expand'.
-			state:
-				bool, or string "toggle" or "disable"
-
-			updateChildren:
-				update children part flag;
-					true	- default; set css style 'display' to 'none' or '', when state is bool-value;
-					false	- do not touch 'tree-children';
-					"none"/""/string	- set css style 'display' value;
-			
-			return the to-expand element;
-
-		.getToExpandState(el)		//return null/true/false/"disable"
-		*/
-		treeview_model.setToExpandState(target, "toggle");
-
-		//.getToExpandState(el)		//return null/true/false/"disable"
-		var state = treeview_model.getToExpandState(target);
-		target.style.background = state ? "lime" : "yellow";
-	}
-};
+//.containerAttribute(el, name, value, json)		//get or set container attribute, refer to element-attribute @ npm.
+treeview_model.containerAttribute(my1, "aa", 11);
+treeview_model.containerAttribute(my1, "bb", { b: 22 });
 
 done(!(
-	//.getNode (el)		//get 'tree-node' from self or ancestor of an element
-	treeview_model.getNode(elMy1) === elNode3 &&
-	treeview_model.getNode(elNode3) === elNode3
+
+	//.getNode(el)		//get 'tree-node' from self or ancestor of an element
+	treeview_model.getNode(my1) === nd3 &&
+
+	/*
+	.nodePart(el, className, template, before)
+		template: { (outerHtml | innerHtml | createByDefault) } 
+			| innerHtml | createByDefault===true
+
+		shortcuts:
+			.nodeChildren(el, template)
+			.nodeName(el, template)
+			.nodeToExpand(el, template, before)
+	*/
+	treeview_model.nodeName(my1) === document.getElementById('name3') &&
+	treeview_model.nodePart(nd3, "my-1") === my1 &&
+
+	//.getContainer(el)		//get 'tree-container' from self or ancestor of an element
+	treeview_model.getContainer(my1) === el &&
+
+	el.getAttribute("aa") === "11" &&
+	el.getAttribute("bb") === '{"b":22}' &&
+	treeview_model.containerAttribute(my1, "aa") === "11" &&
+	treeview_model.containerAttribute(my1, "aa", void 0, true) === 11 &&
+	JSON.stringify(treeview_model.containerAttribute(my1, "bb")) === '{"b":22}' &&
+	treeview_model.containerAttr(my1, "bb", void 0, false) === '{"b":22}' &&
+
+	treeview_model.isContainer(el) &&
+	treeview_model.isPart(nd3, "tree-node") &&
+	treeview_model.isPart(nd3.parentNode, "tree-children") &&
+
+	true
 ));
 
 ```
@@ -112,7 +95,8 @@ lv4:			...											//other user defined content;
 lv1:			<div class='tree-children'>...</div>		//required if a node contains children;
 			</div>
 
-lv2:		<div class='tree-node tree-selected'>...</div>	//tree-node selected state, optional;
+lv2:		<div class='tree-node tree-selected tree-selected-last'>...</div>
+															//tree-node selected state, optional;
 
 		</div>
 
