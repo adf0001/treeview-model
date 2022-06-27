@@ -120,7 +120,7 @@ module.exports = {
 						<optgroup  label="update select"></optgroup>
 						<option value="false">false</option>
 						<option value="true">true/remove</option>
-						<option value="shift">shift</option>
+						<option value="shift" selected>shift</option>
 					</select>
 					<span class='-ht-cmd' id=cmdUnselect title="unselect in element">unselect-in</span>/<span class='-ht-cmd' id=cmdUnselectAll title="unselect all">all</span>
 					<label title="unselect-in include"><input id=chkIncude type=checkbox>include</label>
