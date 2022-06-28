@@ -230,7 +230,8 @@ module.exports = {
 				container.addEventListener("click", function () {
 					setTimeout(() => {
 						document.getElementById("spMsg").textContent = container.getAttribute("tree-selected-eid-data") +
-							" " + container.getAttribute("tree-selected-last-eid");
+							" " + container.getAttribute("tree-selected-last-eid") +
+							" " + treeview_model.getOneSelected(container)?.id;
 					}, 0);	//delay for linstener sequence
 				});
 
