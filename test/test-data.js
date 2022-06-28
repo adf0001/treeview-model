@@ -356,13 +356,12 @@ module.exports = {
 		);
 	},
 
-	"level-3": function (done, treeviewModel) {
+	"level-3": function (done, treeviewModel, onlyTool) {
 		treeview_model = treeviewModel || require("../level-3.js");
 
 		module.exports["level-2"](
 			function (err, data) {
 				if (err) { done(err); return; }
-
 
 				var container = treeview_model.getContainer("nd1");
 
@@ -509,10 +508,26 @@ module.exports = {
 						if (elNew && !treeview_model.isSelectedMultiple(elNew)) {
 							treeview_model.clickName(elNew);
 						}
-						else{
+						else {
 							treeview_model.clickContainer(container);
 						}
 					};
+
+
+				//listen to container click event
+				container.addEventListener("click", function () {
+					setTimeout(() => {
+						var sel = treeview_model.getOneSelected(container);
+						var s = sel ? treeview_model.nodeName(sel)?.textContent : "";
+						if (s.length > 50) s = s.slice(0, 50) + "...";
+						document.getElementById("spMsg3").textContent = s;
+					}, 0);	//delay for linstener sequence
+				});
+
+				if (onlyTool) {
+					done(false);
+					return;
+				}
 
 				treeview_model.add(
 					'nd5',
@@ -527,14 +542,6 @@ module.exports = {
 					},
 					{ sweepSpaces: true, }
 				);
-
-				//listen to container click event
-				container.addEventListener("click", function () {
-					setTimeout(() => {
-						var sel = treeview_model.getOneSelected(container);
-						document.getElementById("spMsg3").textContent = sel ? treeview_model.nodeName(sel)?.textContent : "";
-					}, 0);	//delay for linstener sequence
-				});
 
 				//.getNodeInfo(elNode, onlyTreeNode)
 				//get a NodeInfo, that is, [elNode]/[elChildren,"children"]/[elContainer, "container"]
