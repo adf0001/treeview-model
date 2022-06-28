@@ -375,6 +375,7 @@ module.exports = {
 					<span class='-ht-cmd' id=cmdInsertNext>insert-next</span>/<span class='-ht-cmd' id=cmdInsertNext2>2</span> &nbsp;
 					<span class='-ht-cmd' id=cmdRemove>remove</span>/<span class='-ht-cmd' id=cmdRemoveChildren title="remove only children">ch</span> &nbsp;
 					<span class='-ht-cmd' id=cmdUpdate>update</span> &nbsp;
+					<span id=spMsg3></span>
 				</div>`
 				);
 
@@ -501,12 +502,15 @@ module.exports = {
 						}
 						else if (cmdId === "cmdUpdate") {
 							if (elSelOne) {
-								treeview_model.nodeName(elSelOne).textContent = newName;
+								treeview_model.update(elSel, newName);
 							}
 						}
 
 						if (elNew && !treeview_model.isSelectedMultiple(elNew)) {
 							treeview_model.clickName(elNew);
+						}
+						else{
+							treeview_model.clickContainer(container);
 						}
 					};
 
@@ -523,6 +527,14 @@ module.exports = {
 					},
 					{ sweepSpaces: true, }
 				);
+
+				//listen to container click event
+				container.addEventListener("click", function () {
+					setTimeout(() => {
+						var sel = treeview_model.getOneSelected(container);
+						document.getElementById("spMsg3").textContent = sel ? treeview_model.nodeName(sel)?.textContent : "";
+					}, 0);	//delay for linstener sequence
+				});
 
 				//.getNodeInfo(elNode, onlyTreeNode)
 				//get a NodeInfo, that is, [elNode]/[elChildren,"children"]/[elContainer, "container"]

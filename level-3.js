@@ -7,5 +7,6 @@ Object.assign(exports,
 	require("./lib/add.js"),
 	require("./lib/insert.js"),
 	require("./lib/remove.js"),
+	require("./lib/update.js"),
 	require("./lib/node-info.js"),
 );
