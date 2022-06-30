@@ -561,6 +561,10 @@ module.exports = {
 
 				var { INFO_NODE, INFO_TYPE } = treeview_model;
 
+				//dataset
+				treeview_model.getOptions(nd5).dataset = treeview_model.initDataset(container, "test-key", "ttt");
+				treeview_model.initDataset(container, container.id, "2222");
+
 				done(!(
 					nf1[INFO_NODE] === nd5 &&
 					!nf1[INFO_TYPE] &&
@@ -575,6 +579,11 @@ module.exports = {
 					nf3[INFO_NODE] === container &&
 					nf3[INFO_TYPE] === "container" &&
 					nf3b === null &&
+
+					treeview_model.getDataset(nd5) === treeview_model.getOptions(nd5).dataset &&
+					treeview_model.getDataset(nd5)[""] === "2222" &&
+					treeview_model.getDataset(nd5)[container.id] === "2222" &&
+					!("test-key" in treeview_model.getDataset(nd5)) &&
 
 					true
 				));

@@ -9,4 +9,6 @@ Object.assign(exports,
 	require("./lib/remove.js"),
 	require("./lib/update.js"),
 	require("./lib/node-info.js"),
+
+	require("./lib/dataset.js"),
 );
