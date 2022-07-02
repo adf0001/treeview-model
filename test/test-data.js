@@ -190,8 +190,21 @@ module.exports = {
 					};
 
 				var myData = { a: 1 };
+				var myDataFlag = 0;
 
 				function setOnClick() {
+					var options = {
+						multipleSelection: document.getElementById("chkMultiple").checked,
+						updateSelection: getUpdateSel(),
+						toggleSelection: document.getElementById("chkToggleSelection").checked,
+						notifyClick: true,
+					};
+
+					if (!myDataFlag) {
+						myDataFlag = 1;
+						options.myData = myData;		//only set at first time
+					}
+
 					/*
 					.listenOnClick(el, options)		//listen click event by setting container.onclick.
 						options:
@@ -215,13 +228,7 @@ module.exports = {
 								set a click event to container after setting container.onclick;
 					*/
 
-					treeview_model.listenOnClick(container, {
-						multipleSelection: document.getElementById("chkMultiple").checked,
-						updateSelection: getUpdateSel(),
-						toggleSelection: document.getElementById("chkToggleSelection").checked,
-						notifyClick: true,
-						myData: myData,
-					});
+					treeview_model.listenOnClick(container, options);
 				}
 
 				setOnClick();
@@ -231,7 +238,8 @@ module.exports = {
 					setTimeout(() => {
 						document.getElementById("spMsg").textContent = container.getAttribute("tree-selected-eid-data") +
 							" " + container.getAttribute("tree-selected-last-eid") +
-							" " + treeview_model.getOneSelected(container)?.id;
+							" " + treeview_model.getOneSelected(container)?.id +
+							" " + ((treeview_model.getOptions(container).myData === myData) ? "ok" : "!!!FAIL");
 					}, 0);	//delay for linstener sequence
 				});
 

@@ -1,6 +1,6 @@
 {
   "name": "treeview-model",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "dom treeview ui model",
   "main": "treeview-model.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "dispatch-event-by-name": "^1.0.4",
     "ele-id": "^1.0.2",
     "element-attribute": "^0.1.3",
+    "global-event-handler-portal": "^1.0.2",
     "insert-adjacent-return": "^1.0.1",
     "sweep-spaces": "^1.0.0"
   }
