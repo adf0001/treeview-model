@@ -54,6 +54,8 @@ module.exports = {
 				}
 			};
 
+		var nd1 = document.getElementById('nd1');
+
 		var nd3 = document.getElementById('nd3');
 		var my1 = document.getElementById('nd3my1');
 
@@ -92,6 +94,11 @@ module.exports = {
 			treeview_model.isContainer(el) &&
 			treeview_model.isPart(nd3, "tree-node") &&
 			treeview_model.isPart(nd3.parentNode, "tree-children") &&
+
+			treeview_model.nodeParent(nd3) === nd1 &&
+			!treeview_model.nodeParent(nd1) &&
+			!treeview_model.nodeParent(el) &&
+			!treeview_model.getNode(el) &&
 
 			true
 		));
