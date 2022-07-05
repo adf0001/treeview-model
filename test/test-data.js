@@ -213,7 +213,7 @@ module.exports = {
 					}
 
 					/*
-					.listenOnClick(el, options)		//listen click event by setting container.onclick.
+					.setOnClick(el, options)		//set container.onclick handler
 						options:
 							.multipleSelection
 								boolean type; multiple selection flag;
@@ -235,7 +235,7 @@ module.exports = {
 								set a click event to container after setting container.onclick;
 					*/
 
-					treeview_model.listenOnClick(container, options);
+					treeview_model.setOnClick(container, options);
 				}
 
 				setOnClick();
@@ -361,7 +361,7 @@ module.exports = {
 
 					treeview_model.isSelectedMultiple(container) === false &&
 
-					//getOnClickOptions(el) 	//get the `options` argument that last call .listenOnClick()
+					//getOnClickOptions(el) 	//get the `options` argument that last call .setOnClick()
 					myData === treeview_model.getOptions(nd5).myData &&
 
 					true

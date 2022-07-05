@@ -6,7 +6,7 @@ Object.assign(exports,
 
 	require("./lib/to-expand.js"),
 	require("./lib/click.js"),
-	require("./lib/listen-on-click.js"),
+	require("./lib/set-on-click.js"),
 	require("./lib/node-class.js"),
 	require("./lib/selected.js"),
 
