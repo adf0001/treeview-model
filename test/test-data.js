@@ -84,6 +84,9 @@ module.exports = {
 			treeview_model.isPart(nd3, "tree-node") &&
 			treeview_model.isPart(nd3.parentNode, "tree-children") &&
 
+			treeview_model.isChildrenContainer(nd3.parentNode) &&
+			treeview_model.isChildrenContainer(el) &&
+
 			treeview_model.nodeParent(nd3) === nd1 &&
 			!treeview_model.nodeParent(nd1) &&
 			!treeview_model.nodeParent(el) &&
@@ -363,7 +366,7 @@ module.exports = {
 					treeview_model.containerAttribute(nd5, "aa", void 0, true) === 11 &&
 					JSON.stringify(treeview_model.containerAttribute(nd5, "bb")) === '{"b":22}' &&
 					treeview_model.containerAttr(nd5, "bb", void 0, false) === '{"b":22}' &&
-		
+
 					true
 				));
 			},
