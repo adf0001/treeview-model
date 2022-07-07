@@ -59,10 +59,6 @@ module.exports = {
 		var nd3 = document.getElementById('nd3');
 		var my1 = document.getElementById('nd3my1');
 
-		//.containerAttribute(el, name, value, json)		//get or set container attribute, refer to element-attribute @ npm.
-		treeview_model.containerAttribute(my1, "aa", 11);
-		treeview_model.containerAttribute(my1, "bb", { b: 22 });
-
 		done(!(
 
 			//.getNode(el)		//get 'tree-node' from self or ancestor of an element
@@ -83,13 +79,6 @@ module.exports = {
 
 			//.getContainer(el)		//get 'tree-container' from self or ancestor of an element
 			treeview_model.getContainer(my1) === el &&
-
-			el.getAttribute("aa") === "11" &&
-			el.getAttribute("bb") === '{"b":22}' &&
-			treeview_model.containerAttribute(my1, "aa") === "11" &&
-			treeview_model.containerAttribute(my1, "aa", void 0, true) === 11 &&
-			JSON.stringify(treeview_model.containerAttribute(my1, "bb")) === '{"b":22}' &&
-			treeview_model.containerAttr(my1, "bb", void 0, false) === '{"b":22}' &&
 
 			treeview_model.isContainer(el) &&
 			treeview_model.isPart(nd3, "tree-node") &&
@@ -327,6 +316,10 @@ module.exports = {
 
 				treeview_model.clickName(nd5);
 
+				//.containerAttribute(el, name, value, json)		//get or set container attribute, refer to element-attribute @ npm.
+				treeview_model.containerAttribute(nd5, "aa", 11);
+				treeview_model.containerAttribute(nd5, "bb", { b: 22 });
+
 				done(!(
 					treeview_model.getToExpandState(nd1) === false &&
 					treeview_model.getToExpandState(nd3) === "disable" &&
@@ -364,6 +357,13 @@ module.exports = {
 					//getOnClickOptions(el) 	//get the `options` argument that last call .setOnClick()
 					myData === treeview_model.getOptions(nd5).myData &&
 
+					container.getAttribute("aa") === "11" &&
+					container.getAttribute("bb") === '{"b":22}' &&
+					treeview_model.containerAttribute(nd5, "aa") === "11" &&
+					treeview_model.containerAttribute(nd5, "aa", void 0, true) === 11 &&
+					JSON.stringify(treeview_model.containerAttribute(nd5, "bb")) === '{"b":22}' &&
+					treeview_model.containerAttr(nd5, "bb", void 0, false) === '{"b":22}' &&
+		
 					true
 				));
 			},

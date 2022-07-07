@@ -9,6 +9,7 @@ Object.assign(exports,
 	require("./lib/set-on-click.js"),
 	require("./lib/node-class.js"),
 	require("./lib/selected.js"),
+	require("./lib/container-attribute.js"),
 
 	require("./lib/options.js"),
 );
