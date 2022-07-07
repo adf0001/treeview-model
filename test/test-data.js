@@ -596,7 +596,7 @@ module.exports = {
 					nf3b === null &&
 
 					treeview_model.getDataset(nd5) === treeview_model.getOptions(nd5).dataset &&
-					treeview_model.getDataset(nd5)[""] === "2222" &&
+					treeview_model.getDataset(nd5)[" "] === "2222" &&
 					treeview_model.getDataset(nd5)[container.id] === "2222" &&
 					!("test-key" in treeview_model.getDataset(nd5)) &&
 
