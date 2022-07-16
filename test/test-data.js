@@ -96,7 +96,7 @@ module.exports = {
 		));
 	},
 
-	"level-2": function (done, treeviewModel) {
+	"level-2": function (done, treeviewModel, onlyTool) {
 		//console.log(treeviewModel);
 		treeview_model = treeviewModel || require("../level-2.js");
 
@@ -242,10 +242,14 @@ module.exports = {
 					}, 0);	//delay for linstener sequence
 				});
 
-
 				document.getElementById("chkMultiple").onclick =
 					document.getElementById("selUpdateSel").onchange =
 					document.getElementById("chkToggleSelection").onclick = setOnClick;
+
+				if (onlyTool) {
+					done(false);
+					return;
+				}
 
 				treeview_model.nodeChildren('nd3my1', true).insertAdjacentHTML(
 					"beforeend",
@@ -606,7 +610,8 @@ module.exports = {
 					true
 				));
 			},
-			treeview_model
+			treeview_model,
+			onlyTool
 		);
 	},
 
