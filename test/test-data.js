@@ -237,7 +237,8 @@ module.exports = {
 					setTimeout(() => {
 						document.getElementById("spMsg").textContent = container.getAttribute("tree-selected-eid-data") +
 							" " + container.getAttribute("tree-selected-last-eid") +
-							" " + treeview_model.getOneSelected(container)?.id +
+							" one:" + treeview_model.getOneSelected(container)?.id +
+							" single:" + treeview_model.getSingleSelected(container)?.id +
 							" " + ((treeview_model.getOptions(container).myData === myData) ? "ok" : "!!!FAIL");
 					}, 0);	//delay for linstener sequence
 				});
