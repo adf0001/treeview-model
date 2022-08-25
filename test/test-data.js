@@ -577,12 +577,14 @@ module.exports = {
 
 				var nd5Children = treeview_model.nodeChildren("nd5");	//a children part
 				var nf2 = treeview_model.getNodeInfo(nd5Children);
-				var nf2b = treeview_model.getNodeInfo(nd5Children, true);
-				//console.log(nf2b);
+				try {
+					var nf2b = treeview_model.getNodeInfo(nd5Children, true);
+				} catch (ex) { }
 
 				var nf3 = treeview_model.getNodeInfo(container);	//the container
-				var nf3b = treeview_model.getNodeInfo(container, true);
-				//console.log(nf3b);
+				try {
+					var nf3b = treeview_model.getNodeInfo(container, true);
+				} catch (ex) { }
 
 				var { INFO_NODE, INFO_TYPE } = treeview_model;
 
@@ -599,11 +601,11 @@ module.exports = {
 
 					nf2[INFO_NODE] === nd5Children &&
 					nf2[INFO_TYPE] === "children" &&
-					(nf2b instanceof Error) &&
+					!nf2b &&
 
 					nf3[INFO_NODE] === container &&
 					nf3[INFO_TYPE] === "container" &&
-					(nf3b instanceof Error) &&
+					!nf3b &&
 
 					treeview_model.getDataset(nd5) === treeview_model.getOptions(nd5).dataset &&
 					treeview_model.getDataset(nd5)[" "] === "2222" &&
